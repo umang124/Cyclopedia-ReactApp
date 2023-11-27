@@ -1,7 +1,7 @@
 import React from "react";
 import { getRandomUser } from "./Utility/api";
 
-class CyclPPediaClassPage extends React.Component {
+class CyclOPediaClassPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,6 +12,7 @@ class CyclPPediaClassPage extends React.Component {
     };
   }
   componentDidMount = async () => {
+    console.log("Component Did Mount");
     const response = await getRandomUser();
     console.log(response);
     this.setState((prevState) => {
@@ -30,6 +31,23 @@ class CyclPPediaClassPage extends React.Component {
   componentWillUnmount() {
     console.log("Component Did Unmount");
   }
+
+  handleAddStudent = () => {
+    this.setState((prevState) => {
+      return {
+        studentCount: prevState.studentCount + 1,
+      };
+    });
+  };
+
+  handleRemoveAllStudents = () => {
+    this.setState((prevState) => {
+      return {
+        studentCount: 0,
+      };
+    });
+  };
+
   render() {
     console.log("Render Component");
     return (
@@ -44,8 +62,26 @@ class CyclPPediaClassPage extends React.Component {
             Phone: {this.state.instructor.phone} <br />
           </div>
         )}
+        <div className="p-3">
+          <span className="h4 text-success">Students</span>
+          <br />
+          <div>Student Count : {this.state.studentCount}</div>
+          <button
+            onClick={this.handleAddStudent}
+            className="btn btn-success btn-sm"
+          >
+            Add Student
+          </button>{" "}
+          &nbsp;
+          <button
+            onClick={this.handleRemoveAllStudents}
+            className="btn btn-danger btn-sm"
+          >
+            Remove All Students
+          </button>
+        </div>
       </div>
     );
   }
 }
-export default CyclPPediaClassPage;
+export default CyclOPediaClassPage;
