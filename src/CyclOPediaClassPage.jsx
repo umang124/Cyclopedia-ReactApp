@@ -34,10 +34,27 @@ class CyclOPediaClassPage extends React.Component {
     }
   };
 
-  componentDidUpdate() {
+  componentDidUpdate = async (previousProps, previousState) => {
     console.log("Component Did Update");
     localStorage.setItem("cyclopediaState", JSON.stringify(this.state));
-  }
+    if (previousState.studentCount < this.state.studentCount) {
+      const response = await getRandomUser();
+      this.setState((prevState) => {
+        return {
+          studentList: [
+            ...prevState.studentList,
+            { name: response.data.first_name + " " + response.data.last_name },
+          ],
+        };
+      });
+    } else if (previousState.studentCount > this.state.studentCount) {
+      this.setState((prevState) => {
+        return {
+          studentList: [],
+        };
+      });
+    }
+  };
 
   componentWillUnmount() {
     console.log("Component Did Unmount");
@@ -79,7 +96,7 @@ class CyclOPediaClassPage extends React.Component {
             } btn btn-success btn-sm`}
             onClick={this.handleToggleInstructor}
           ></i>
-          {!this.state.hideInstructor ? (
+          {!this.state.hideInstructor && this.state.instructor ? (
             <Instructor instructor={this.state.instructor} />
           ) : null}
         </div>
@@ -110,7 +127,7 @@ class CyclOPediaClassPage extends React.Component {
             className="btn btn-success btn-sm"
           >
             Add Student
-          </button>{" "}
+          </button>
           &nbsp;
           <button
             onClick={this.handleRemoveAllStudents}
@@ -118,6 +135,13 @@ class CyclOPediaClassPage extends React.Component {
           >
             Remove All Students
           </button>
+          {this.state.studentList.map((student, index) => {
+            return (
+              <div className="text-white" key={index}>
+                - {student.name}
+              </div>
+            );
+          })}
         </div>
       </div>
     );
